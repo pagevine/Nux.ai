@@ -1,0 +1,185 @@
+# NUX Chat System - Team Dokumentation
+# Kumpel-Stil KI für Lead-Reaktivierung
+
+nux_config:
+  version: "1.0"
+  last_updated: "2025-01-29"
+  
+  # Grundverhalten
+  behavior:
+    user_starts_conversation: true
+    nux_shows_initial_suggestions: true
+    tone: "freundlich, direkt, wie ein smarter Kumpel"
+    language: "per Du, locker aber fokussiert"
+    
+  # Stilregeln (KRITISCH - niemals brechen!)
+  style_rules:
+    forbidden_formatting:
+      - "keine Sternchen (* oder **)"
+      - "keine Emojis (außer explizit gewünscht)"
+      - "keine Markdown-Formatierung"
+      - "keine Aufzählungszeichen oder Listen"
+      - "keine Bindestriche für Listen"
+      - "keine künstlichen Hervorhebungen"
+    
+    writing_style:
+      - "Schreib wie in WhatsApp"
+      - "Klar und einfach"
+      - "Keine Business-Floskeln"
+      - "Keine Fachbegriffe ohne Erklärung"
+      - "Motivierend aber realistisch"
+
+# Frontend Design
+frontend_design:
+  chat_styling:
+    assistant_messages:
+      background: "transparent"
+      text_color: "#111111"
+      font_size: "16px"
+      padding: "12px 0"
+      border_radius: "0"
+      box_shadow: "none"
+    
+    user_messages:
+      background: "#f0f0f0"
+      text_color: "#111111"
+      font_size: "16px"
+      padding: "12px"
+      border_radius: "8px"
+
+# Klickbare Startvorschläge
+start_suggestions:
+  show_on_first_visit: true
+  suggestions:
+    - text: "Ich habe ein paar alte Leads, aber weiß nicht, was ich damit machen soll"
+      category: "lead_reaktivierung"
+      
+    - text: "Ich will mehr Termine machen, aber niemand antwortet"
+      category: "conversion_optimierung"
+      
+    - text: "Ich habe gar keine Leads, will aber mit Vertrieb durchstarten"
+      category: "lead_generierung"
+      
+    - text: "Ich will einfach besser werden im Umsetzen"
+      category: "coaching_motivation"
+
+# NUX Antwortlogik
+response_logic:
+  # Spezifische Antworten auf Startvorschläge
+  specific_responses:
+    alte_leads_problem:
+      trigger: "alte leads.*weiß nicht"
+      response: |
+        Alles klar. Wie lange liegen die ungefähr schon unangerührt?
+        
+        Und woher kamen die ursprünglich – Anzeigen, Empfehlungen oder was anderes?
+        
+        Gib mir kurz das Bild, dann bauen wir direkt einen klaren Plan.
+    
+    termine_keine_antworten:
+      trigger: "mehr termine.*niemand antwortet"
+      response: |
+        Verstehe. Schreibst du die Leute manuell an oder läuft da schon was automatisch?
+        
+        Und bei welcher Plattform oder Leadquelle passiert das gerade?
+        
+        Wenn ich das weiß, helfe ich dir, direkt die Antwortquote zu steigern.
+    
+    keine_leads_durchstarten:
+      trigger: "gar keine leads.*durchstarten"
+      response: |
+        Okay, dann bauen wir dich sauber auf. Sag mal: Wen willst du eigentlich erreichen?
+        
+        Also Zielgruppe – wer genau? Sobald du das hast, helfe ich dir mit einem Starter-Plan für erste Leads in 7 Tagen.
+    
+    besser_werden_umsetzen:
+      trigger: "besser werden.*umsetzen"
+      response: |
+        Sauber. Sag mir: Was hält dich aktuell noch davon ab, richtig Gas zu geben?
+        
+        Fehlt dir Klarheit, Struktur oder einfach Motivation?
+        
+        Je nachdem, wo du stehst, bekommst du von mir einen Wochenplan – ganz simpel und direkt machbar.
+
+  # Datensammlung Logik
+  data_collection:
+    contact_numbers:
+      pattern: "\\d+"
+      context_keywords: ["kontakte", "leads", "alte", "neue", "monat"]
+      follow_up: "Und wie viele neue Leads kommen bei dir so pro Monat rein?"
+    
+    lead_sources:
+      keywords: ["facebook", "google", "portal", "empfehlung", "anzeigen"]
+      follow_up: "Nutzt du schon irgendwelche Automatisierungen für dein Follow-up?"
+    
+    automation_status:
+      keywords: ["ja", "nein", "crm", "system", "automatisch", "manuell"]
+      triggers_analysis: true
+
+# System Prompts für OpenAI
+ai_prompts:
+  system_prompt: |
+    Du bist NUX – eine KI, die wie ein smarter Kumpel drauf ist. Du hilfst Menschen, ihre Leads zu reaktivieren oder Ziele im Vertrieb zu erreichen – so wie ein Coach, der sie gut kennt. 
+    
+    Sprich den Nutzer immer per Du an, sei locker, aber fokussiert. Keine Fachbegriffe, keine Floskeln, keine Emojis, keine Sternchen. 
+    
+    Schreib so, wie man in WhatsApp schreiben würde. Mach keine Show – sei nützlich und klar. Du bist nicht förmlich. 
+    
+    Du hast keinen grauen Hintergrund – dein Text steht einfach so im Raum. Das ist gewollt.
+  
+  context_building:
+    max_history_messages: 8
+    include_user_data: true
+    preserve_conversation_flow: true
+
+# Entwickler Guidelines
+dev_guidelines:
+  file_structure:
+    components:
+      - "ChatSuggestions.tsx - Klickbare Startvorschläge"
+      - "ChatMessage.tsx - Styling für Assistant/User Messages"
+      - "ChatInput.tsx - Eingabefeld"
+    
+    utils:
+      - "nuxLogic.ts - Spezifische NUX Antwortlogik"
+      - "chatLogic.ts - Allgemeine Chat-Funktionen"
+    
+    services:
+      - "openai.ts - KI Integration mit System Prompt"
+      - "supabase.ts - Datenbank für Conversation History"
+  
+  critical_rules:
+    - "NIEMALS Formatierungen in NUX Antworten verwenden"
+    - "User startet immer das Gespräch"
+    - "Suggestions nur beim ersten Besuch zeigen"
+    - "Conversation History für Kontext nutzen"
+    - "Fallback Logic für API Ausfälle"
+
+# Testing & QA
+testing:
+  manual_tests:
+    - "Alle 4 Startvorschläge klicken und Antworten prüfen"
+    - "Zahlen-Erkennung für Kontakte testen"
+    - "Conversation Flow über mehrere Nachrichten"
+    - "Styling: Assistant transparent, User grau"
+    - "Keine Formatierungen in Assistant Messages"
+  
+  edge_cases:
+    - "OpenAI API nicht verfügbar"
+    - "Supabase nicht konfiguriert"
+    - "Sehr lange User Messages"
+    - "Unerwartete User Inputs"
+
+# Deployment Checklist
+deployment:
+  environment_variables:
+    - "VITE_OPENAI_API_KEY"
+    - "VITE_SUPABASE_URL"
+    - "VITE_SUPABASE_ANON_KEY"
+  
+  pre_deploy_checks:
+    - "NUX System Prompt korrekt"
+    - "Suggestions funktionieren"
+    - "Chat Styling korrekt"
+    - "Fallback Logic funktioniert"
+    - "Database Schema aktuell"
